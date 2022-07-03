@@ -1,0 +1,49 @@
+<div class="m-4">
+  <div class="input-group mb-3">
+    <input
+      [(ngModel)]="filterValue"
+      type="number"
+      min="1"
+      class="form-control"
+      placeholder="User Id"
+      aria-label="User Id"
+      aria-describedby="basic-addon2"
+    />
+    <div class="input-group-append">
+      <button
+        class="btn btn-outline-secondary"
+        type="button"
+        (click)="searchByUserId(filterValue)"
+      >
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>UserId</th>
+        <th>Title</th>
+        <th>Body</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template let-post ngFor [ngForOf]="posts">
+        <tr [routerLink]="['/postdetails/', post.id]">
+          <td>{{ post.id }}</td>
+          <td>{{ post.userId }}</td>
+          <td>{{ post.title }}</td>
+          <td>{{ post.body }}</td>
+          <td>
+            <span *ngFor="let comment of post.comments"
+              >Id: {{ comment.id }}, Name: {{ comment.name }} |
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </table>
+</div>
