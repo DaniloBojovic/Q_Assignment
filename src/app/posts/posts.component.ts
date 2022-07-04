@@ -11,10 +11,12 @@ import { PostsService } from '../services/posts.service';
 export class PostsComponent implements OnInit {
   posts!: Post[];
   filterValue: any;
+  comments!: Comment[];
 
   constructor(private postService: PostsService) {}
 
   ngOnInit(): void {
+    this.getCommentsAll();
     this.getPosts();
   }
 
@@ -23,18 +25,23 @@ export class PostsComponent implements OnInit {
       .getPosts()
       .pipe(tap((res) => (this.posts = res)))
       .subscribe({
-        next: (res) => res.forEach((p) => this.getComments(p)),
+        next: (res) => res.forEach((p) => this.getCommentsForPost(p)),
         error: (e) => console.error(e),
         complete: () => console.info('complete'),
       });
   }
 
-  getComments(post: Post) {
+  getCommentsAll() {
+    this.postService.getAllComments().subscribe((res) => (this.comments = res));
+  }
+
+  getCommentsForPost(post: Post) {
     post.comments = [];
-    this.postService.getCommentsForPosts(post.id).subscribe({
-      next: (res) => res.forEach((comment: any) => post.comments.push(comment)),
-      error: (e) => console.error(e),
-      complete: () => console.info('complete'),
+
+    this.comments.filter((comment: any) => {
+      if (comment.postId === post.id) {
+        post.comments.push(comment);
+      }
     });
   }
 
@@ -44,7 +51,7 @@ export class PostsComponent implements OnInit {
         .getPostsByUserId(userId)
         .pipe(tap((res) => (this.posts = res)))
         .subscribe({
-          next: (res) => res.forEach((p) => this.getComments(p)),
+          next: (res) => res.forEach((p) => this.getCommentsForPost(p)),
           error: (e) => console.error(e),
           complete: () => console.info('complete'),
         });

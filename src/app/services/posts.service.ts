@@ -25,6 +25,12 @@ export class PostsService {
     );
   }
 
+  getAllComments() {
+    return this.http.get<Comment[]>(
+      `https://jsonplaceholder.typicode.com/comments`
+    );
+  }
+
   getPostsByUserId(userId: number): Observable<Post[]> {
     return this.http.get<Post[]>(
       `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
